@@ -15,6 +15,7 @@ public class Unit : MonoBehaviour
     private void Awake()
     {
         unitAnimator = GetComponentInChildren<Animator>();
+        targetPosition= transform.position;
     }
 
 
@@ -22,10 +23,7 @@ public class Unit : MonoBehaviour
     private Vector3 targetPosition;
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Move(MouseWorld.GetPosition());
-        }
+       
         MoveToTarget();
     }
 
@@ -46,7 +44,7 @@ public class Unit : MonoBehaviour
         }
     }
 
-    private void Move(Vector3 target)
+    public void Move(Vector3 target)
     {
         this.targetPosition = target;
     }
