@@ -13,7 +13,8 @@ public class UnitSelectedVisual : MonoBehaviour
     private void Awake()
     {
         meshRenderer= GetComponent<MeshRenderer>();
-        unit = GetComponentInParent<Unit>(); 
+        unit = GetComponentInParent<Unit>();
+        
     }
     
 

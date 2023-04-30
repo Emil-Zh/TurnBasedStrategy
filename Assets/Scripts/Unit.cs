@@ -10,7 +10,10 @@ public class Unit : MonoBehaviour
 
     Animator unitAnimator;
     string isWalkingAnimation = "IsWalking";
-   
+
+    private Vector3 targetPosition;
+    private GridPosition currentGridPosition;
+
 
     private void Awake()
     {
@@ -18,9 +21,11 @@ public class Unit : MonoBehaviour
         targetPosition= transform.position;
     }
 
-
-
-    private Vector3 targetPosition;
+    private void Start()
+    {
+        currentGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+        LevelGrid.Instance.AddUnitAtGridPosition(currentGridPosition, this);
+    }
     void Update()
     {
        
@@ -33,20 +38,28 @@ public class Unit : MonoBehaviour
         float distanceBetweenUnitAndTarget = Vector3.Distance(transform.position, targetPosition);
         if (distanceBetweenUnitAndTarget >= stoppingDisntacce)
         {
-            ChangeAnimationState(isWalkingAnimation, true);
             Vector3 moveDirection = (targetPosition - transform.position).normalized;
             Rotate(moveDirection);
             transform.position += moveDirection * Time.deltaTime * moveSpeed;
+
+            ChangeAnimationState(isWalkingAnimation, true);
         }
         else
         {
             ChangeAnimationState(isWalkingAnimation, false);
         }
+
+        GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+        if(newGridPosition != currentGridPosition)
+        {
+            LevelGrid.Instance.UnitMoveGridPosition(this, currentGridPosition, newGridPosition);
+            currentGridPosition= newGridPosition;
+        }
     }
 
     public void Move(Vector3 target)
     {
-        this.targetPosition = target;
+        targetPosition = target;
     }
 
     private void Rotate(Vector3 rotationDirection)

@@ -15,13 +15,7 @@ public class UnitActionSystem : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance != null)
-        {
-            Debug.LogError("There's more htank one UnitActionSystem" + transform + " - " + Instance);
-            Destroy(Instance);
-            return;
-        }
-         Instance = this;
+        SetSingleton();
     }
 
     private void Update()
@@ -29,7 +23,7 @@ public class UnitActionSystem : MonoBehaviour
         
         if(Input.GetMouseButtonDown(0))
         {
-            if (TryHandelUnitSelection()) return;
+            if (TryHandleUnitSelection()) return;
             selectedUnit.Move(MouseWorld.GetPosition());
         }
             
@@ -41,7 +35,7 @@ public class UnitActionSystem : MonoBehaviour
     {
         get { return selectedUnit; }
     }
-    private bool TryHandelUnitSelection()
+    private bool TryHandleUnitSelection()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if(Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, unitLayerMask))
@@ -62,5 +56,16 @@ public class UnitActionSystem : MonoBehaviour
 
         OnSelectedUnitChange?.Invoke(this, EventArgs.Empty);
        
+    }
+    private void SetSingleton()
+    {
+        if (Instance != null)
+        {
+
+            Debug.LogError("There's more than one UnitActionSystem" + transform + " - " + Instance);
+            Destroy(Instance);
+            return;
+        }
+        Instance= this;
     }
 }
