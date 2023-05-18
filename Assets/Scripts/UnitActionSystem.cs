@@ -10,7 +10,7 @@ public class UnitActionSystem : MonoBehaviour
 
     [SerializeField] private Unit selectedUnit;
     [SerializeField] private LayerMask unitLayerMask;
-
+    
     public event EventHandler OnSelectedUnitChange;
 
     private void Awake()
@@ -37,11 +37,11 @@ public class UnitActionSystem : MonoBehaviour
         
     }
 
-
     public Unit GetSelectedUnit
     {
         get { return selectedUnit; }
     }
+
     private bool TryHandleUnitSelection()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
