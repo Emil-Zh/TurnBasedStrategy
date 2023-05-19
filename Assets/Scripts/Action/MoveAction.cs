@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class MoveAction : MonoBehaviour
+public class MoveAction : BaseAction
 {
     [SerializeField] private float moveSpeed = 4f;
     [SerializeField] private float rotationSpeed = 10f;
@@ -11,40 +12,49 @@ public class MoveAction : MonoBehaviour
     Animator unitAnimator;
     string isWalkingAnimation = "IsWalking";
     private Vector3 targetPosition;
-    private Unit unit;
-    private void Awake()
+    
+   
+    protected override void Awake()
     {
-        unit = GetComponent<Unit>();
+        base.Awake();
         unitAnimator = GetComponentInChildren<Animator>();
         targetPosition = transform.position;
     }
     private void Update()
     {
+        if(!isActive)
+        {
+            return;
+        }
         MoveToTarget();
     }
     private void MoveToTarget()
     {
+        Vector3 moveDirection = (targetPosition - transform.position).normalized;
         float stoppingDisntacce = 0.01f;
         float distanceBetweenUnitAndTarget = Vector3.Distance(transform.position, targetPosition);
         if (distanceBetweenUnitAndTarget >= stoppingDisntacce)
         {
-            Vector3 moveDirection = (targetPosition - transform.position).normalized;
-            Rotate(moveDirection);
+            
             transform.position += moveDirection * Time.deltaTime * moveSpeed;
-
             ChangeAnimationState(isWalkingAnimation, true);
         }
         else
         {
+            
             ChangeAnimationState(isWalkingAnimation, false);
+            isActive = false;
+            onActionComplete();
         }
+        Rotate(moveDirection);
 
-       
     }
 
-    public void Move(GridPosition target)
+    public void Move(GridPosition target, Action onActionComplete)
     {
+        this.onActionComplete = onActionComplete;
         targetPosition = LevelGrid.Instance.GetWorldPosition(target);
+        isActive = true;
     }
     private void Rotate(Vector3 rotationDirection)
     {
@@ -91,7 +101,7 @@ public class MoveAction : MonoBehaviour
                 }
 
                 validGridPositionList.Add(testGridPosition);
-                Debug.Log(testGridPosition);
+               
             }
         }
         
