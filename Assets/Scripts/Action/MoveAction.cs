@@ -31,7 +31,7 @@ public class MoveAction : BaseAction
     private void MoveToTarget()
     {
         Vector3 moveDirection = (targetPosition - transform.position).normalized;
-        float stoppingDisntacce = 0.01f;
+        float stoppingDisntacce = 0.1f;
         float distanceBetweenUnitAndTarget = Vector3.Distance(transform.position, targetPosition);
         if (distanceBetweenUnitAndTarget >= stoppingDisntacce)
         {
@@ -109,4 +109,6 @@ public class MoveAction : BaseAction
     {
         return "Move";
     }
+
+   
 }
