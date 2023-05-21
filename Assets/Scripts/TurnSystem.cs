@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 public class TurnSystem : MonoBehaviour
 {
     private int turnNumber = 1;
+    private bool isPlayerTurn = true;
+    public bool IsPlayerTurn { get { return isPlayerTurn; } }
 
     public int TurnNumber { get { return turnNumber; } }
     public static TurnSystem Instance { get; private set; }
@@ -19,6 +21,7 @@ public class TurnSystem : MonoBehaviour
     public void NextTurn()
     {
         turnNumber++;
+        isPlayerTurn= !isPlayerTurn;
         OnTurnChange(this, EventArgs.Empty);
     }
     private void SetSingleton()
@@ -32,4 +35,6 @@ public class TurnSystem : MonoBehaviour
         }
         Instance = this;
     }
+
+    
 }

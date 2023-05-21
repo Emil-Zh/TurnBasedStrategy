@@ -43,8 +43,7 @@ public class MoveAction : BaseAction
         {
             
             ChangeAnimationState(isWalkingAnimation, false);
-            isActive = false;
-            onActionComplete();
+            ActionComplete();
         }
         Rotate(moveDirection);
 
@@ -52,9 +51,9 @@ public class MoveAction : BaseAction
 
     public override void TakeAction(GridPosition target, Action onActionComplete)
     {
-        this.onActionComplete = onActionComplete;
+        ActionStart(onActionComplete);
         targetPosition = LevelGrid.Instance.GetWorldPosition(target);
-        isActive = true;
+        
     }
     private void Rotate(Vector3 rotationDirection)
     {

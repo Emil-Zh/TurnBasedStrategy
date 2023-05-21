@@ -8,6 +8,9 @@ public class Unit : MonoBehaviour
 {
     [SerializeField] private int MAX_ACTION_POINTS = 2;
 
+    [SerializeField] private bool isEnemy;
+    public bool IsEnemy { get { return isEnemy; } }
+
     public static event EventHandler OnAnyPointsChanged;
     public GridPosition CurrentGridPosition { get; private set; }
     public MoveAction MoveAction { get; private set; }
@@ -26,7 +29,7 @@ public class Unit : MonoBehaviour
         SpinAction = GetComponent<SpinAction>();
         baseActionArray = GetComponents<BaseAction>();
         actionPoints = MAX_ACTION_POINTS;
-       
+
     }
 
     private void Start()
@@ -43,10 +46,10 @@ public class Unit : MonoBehaviour
     private void CheckGridPosition()
     {
         GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
-        if(newGridPosition != CurrentGridPosition)
+        if (newGridPosition != CurrentGridPosition)
         {
             LevelGrid.Instance.UnitMoveGridPosition(this, CurrentGridPosition, newGridPosition);
-            CurrentGridPosition= newGridPosition;
+            CurrentGridPosition = newGridPosition;
         }
     }
 
@@ -61,7 +64,7 @@ public class Unit : MonoBehaviour
     {
         actionPoints -= amount;
 
-        OnAnyPointsChanged?.Invoke(this,EventArgs.Empty);
+        OnAnyPointsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public bool TrySpendActionPointsToTakeAction(BaseAction baseAction)
@@ -73,16 +76,23 @@ public class Unit : MonoBehaviour
         SpendActionPoints(baseAction.GetActionPointsCost());
         return true;
     }
-   
+
     private void TurnSystem_OnTurnChange(object sender, EventArgs e)
     {
-        actionPoints = MAX_ACTION_POINTS;
+        if (isEnemy && !TurnSystem.Instance.IsPlayerTurn ||
+            !isEnemy && TurnSystem.Instance.IsPlayerTurn)
+        {
+            actionPoints = MAX_ACTION_POINTS;
 
-        OnAnyPointsChanged?.Invoke(this, EventArgs.Empty);
+            OnAnyPointsChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 
 
-
+    public void Damage()
+    {
+        Debug.Log(transform + "damage");
+    }
 
 
 
