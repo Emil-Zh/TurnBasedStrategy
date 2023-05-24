@@ -10,11 +10,20 @@ public class ShootAction : BaseAction
     [SerializeField] private float aimTime = 0.2f;
     [SerializeField] private float shootTime = 0.1f;
     [SerializeField] private float cooloffTIme = 0.2f;
+
     private float stateTimer;
-    Unit targetUnit;
+    private Unit targetUnit;
     private bool canShootBullet;
-    ShootState state;
+    private ShootState state;
     private float rotationSpeed = 20f;
+
+    public event EventHandler<OnShootEventArgs> OnShoot;
+
+    public class OnShootEventArgs : EventArgs
+    {
+        public Unit targetUnit;
+        public Unit shootingUnit;
+    }
 
     enum ShootState
     {
@@ -39,6 +48,11 @@ public class ShootAction : BaseAction
             case ShootState.Shooting:
                 if (canShootBullet)
                 {
+                    OnShoot?.Invoke(this, new OnShootEventArgs
+                    {
+                        targetUnit = targetUnit,
+                        shootingUnit = unit
+                    }); ;
                     Shoot();
                     canShootBullet = false;
                 }
@@ -145,7 +159,7 @@ public class ShootAction : BaseAction
 
     private void Shoot()
     {
-        targetUnit.Damage();
+        targetUnit.TakeDamage(40);
     }
     
 

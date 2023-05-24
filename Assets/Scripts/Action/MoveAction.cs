@@ -9,15 +9,15 @@ public class MoveAction : BaseAction
     [SerializeField] private float moveSpeed = 4f;
     [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private int maxMoveDistance = 4;
-    Animator unitAnimator;
-    string isWalkingAnimation = "IsWalking";
+
     private Vector3 targetPosition;
-    
+
+    public event EventHandler OnStartMoving;
+    public event EventHandler OnStopMoving;
    
     protected override void Awake()
     {
         base.Awake();
-        unitAnimator = GetComponentInChildren<Animator>();
         targetPosition = transform.position;
     }
     private void Update()
@@ -37,12 +37,12 @@ public class MoveAction : BaseAction
         {
             
             transform.position += moveDirection * Time.deltaTime * moveSpeed;
-            ChangeAnimationState(isWalkingAnimation, true);
+            OnStartMoving?.Invoke(this, EventArgs.Empty);
         }
         else
         {
-            
-            ChangeAnimationState(isWalkingAnimation, false);
+
+            OnStopMoving?.Invoke(this, EventArgs.Empty);
             ActionComplete();
         }
         Rotate(moveDirection);
@@ -59,11 +59,7 @@ public class MoveAction : BaseAction
     {
         transform.forward = Vector3.Lerp(transform.forward, rotationDirection, Time.deltaTime * rotationSpeed);
     }
-    private void ChangeAnimationState(string animationName, bool state)
-    {
-        if (unitAnimator == null) return;
-        unitAnimator.SetBool(animationName, state);
-    }
+    
 
   
 
